@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   ReactFlow,
   MiniMap,
@@ -7,6 +7,7 @@ import {
   useNodesState,
   useEdgesState,
   addEdge,
+  MarkerType,
 } from "@xyflow/react";
 
 import "@xyflow/react/dist/style.css";
@@ -35,7 +36,25 @@ export default function App() {
   };
 
   const onConnect = useCallback(
-    (params: any) => setEdges((eds) => addEdge(params, eds)),
+    (params: any) =>
+      setEdges((eds) =>
+        addEdge(
+          {
+            ...params,
+            markerEnd: {
+              type: MarkerType.ArrowClosed,
+              width: 10,
+              height: 10,
+              color: "#FF0072",
+            },
+            style: {
+              strokeWidth: 5,
+              stroke: "#FF0072",
+            },
+          },
+          eds
+        )
+      ),
     [setEdges]
   );
 
@@ -88,7 +107,7 @@ export default function App() {
           ))}
         </div>
       </div>
-      <div className="w-[calc(100%-25%)] h-screen">
+      <div className="w-[calc(100%-25%)] h-screen z-[9999]">
         <ReactFlow
           selectionOnDrag
           nodeTypes={nodeTypes}
@@ -100,6 +119,10 @@ export default function App() {
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
+          connectionLineStyle={{
+            stroke: "#FF0072",
+            strokeWidth: "5px",
+          }}
         >
           <Controls />
           <MiniMap />
